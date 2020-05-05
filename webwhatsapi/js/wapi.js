@@ -974,6 +974,13 @@ window.WAPI.getHost = function(done){
     return output;
 }
 
+window.WAPI.getMe = function(done) {
+    const rawMe = window.Store.Contact.get(window.Store.Conn.me);
+  
+    if (done !== undefined) done(rawMe.all);
+    return rawMe;
+}
+
 
 window.WAPI.getProfilePicSmallFromId = function (id, done) {
     window.Store.ProfilePicThumb.find(id).then(function (d) {
