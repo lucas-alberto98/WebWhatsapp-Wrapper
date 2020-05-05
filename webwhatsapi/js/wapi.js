@@ -6,7 +6,7 @@
  * Auto discovery the webpack object references of instances that contains all functions used by the WAPI
  * functions and creates the Store object.
  */
-if (!window.Store) {
+if (!window.Store || !window.Store.Msg) {
     (function () {
         function getStore(modules) {
             let foundCount = 0;
@@ -25,7 +25,8 @@ if (!window.Store) {
                 { id: "UserConstructor", conditions: (module) => (module.default && module.default.prototype && module.default.prototype.isServer && module.default.prototype.isUser) ? module.default : null },
                 { id: "SendTextMsgToChat", conditions: (module) => (module.sendTextMsgToChat) ? module.sendTextMsgToChat : null },
                 { id: "SendSeen", conditions: (module) => (module.sendSeen) ? module.sendSeen : null },
-                { id: "sendDelete", conditions: (module) => (module.sendDelete) ? module.sendDelete : null }
+                { id: "sendDelete", conditions: (module) => (module.sendDelete) ? module.sendDelete : null },
+                { id: 'Me', conditions: (module) => module.PLATFORMS && module.Conn ? module.default : null }
             ];
             for (let idx in modules) {
                 if ((typeof modules[idx] === "object") && (modules[idx] !== null)) {
@@ -67,17 +68,15 @@ if (!window.Store) {
             }
         }
 
+        const parasite = `parasite${Date.now()}`;
+
         if (typeof webpackJsonp === 'function') {
-            webpackJsonp([], {'parasite': (x, y, z) => getStore(z)}, ['parasite']);
+            webpackJsonp([], { [parasite]: (x, y, z) => getStore(z) }, [parasite]);
         } else {
             webpackJsonp.push([
-                ['parasite'],
-                {
-                    parasite: function (o, e, t) {
-                        getStore(t);
-                    }
-                },
-                [['parasite']]
+                [parasite],
+                { [parasite]: (x, y, z) => getStore(z) },
+                [[parasite]],
             ]);
         }
     })();
