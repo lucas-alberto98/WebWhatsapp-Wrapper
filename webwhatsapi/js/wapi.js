@@ -965,6 +965,15 @@ window.WAPI.getCommonGroups = async function (id, done) {
     return output;
 };
 
+window.WAPI.getHost = function(done){
+    let output = Store.Me.attributes;
+
+    if (done !== undefined) {
+        done(output);
+    }
+    return output;
+}
+
 
 window.WAPI.getProfilePicSmallFromId = function (id, done) {
     window.Store.ProfilePicThumb.find(id).then(function (d) {
